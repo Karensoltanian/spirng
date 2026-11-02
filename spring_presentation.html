@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#102b25">
+<title>Spring — A Beautiful Season</title>
+<style>
+  *{box-sizing:border-box}
+  :root{--cream:#fff9e9;--green:#d9f3d4;--mint:#bce7c7;--gold:#f4d58d}
+  html,body{margin:0;min-height:100%;font-family:Georgia,"Times New Roman",serif;color:var(--cream)}
+  body{
+    min-height:100vh;overflow-x:hidden;
+    background:linear-gradient(135deg,#102b25 0%,#17483a 48%,#285b45 100%);
+  }
+  /* Animated spring background */
+  .glow{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0}
+  .orb{position:absolute;border-radius:50%;filter:blur(3px);opacity:.2;animation:float 15s ease-in-out infinite alternate}
+  .orb.one{width:42vw;height:42vw;min-width:260px;min-height:260px;left:-12vw;top:-14vw;background:#a8dba5}
+  .orb.two{width:36vw;height:36vw;min-width:220px;min-height:220px;right:-9vw;bottom:-13vw;background:#f2d58a;animation-delay:-5s}
+  .orb.three{width:20vw;height:20vw;min-width:150px;min-height:150px;right:25%;top:22%;background:#8ed9c0;animation-delay:-9s}
+  @keyframes float{to{transform:translate(7vw,5vh) scale(1.12)}}
+  .petal{position:absolute;top:-12vh;width:12px;height:18px;border-radius:90% 10% 90% 10%;
+    background:linear-gradient(135deg,#fff4dc,#efb9c9);opacity:.72;
+    animation:fall linear infinite;transform:rotate(35deg)}
+  @keyframes fall{0%{transform:translate3d(0,-10vh,0) rotate(0deg);opacity:0}
+    10%{opacity:.75}100%{transform:translate3d(12vw,115vh,0) rotate(560deg);opacity:0}}
+  .wrap{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:22px 16px 18px}
+  header{width:min(1050px,100%);display:flex;justify-content:space-between;align-items:center;
+    color:#d8eddb;font:12px/1.4 Arial,sans-serif;letter-spacing:2px;text-transform:uppercase}
+  .brand{display:flex;gap:9px;align-items:center}
+  .brand-mark{width:9px;height:9px;border-radius:50%;background:var(--gold);box-shadow:0 0 15px var(--gold)}
+  .counter{opacity:.8}
+  main{width:min(900px,100%);flex:1;display:flex;align-items:center;justify-content:center;padding:28px 0}
+  .slide{display:none;width:100%;min-height:440px;padding:clamp(28px,6vw,68px);
+    border:1px solid rgba(255,255,255,.2);border-radius:28px;
+    background:linear-gradient(145deg,rgba(255,255,255,.13),rgba(255,255,255,.055));
+    box-shadow:0 24px 80px rgba(0,0,0,.22);backdrop-filter:blur(12px);
+    animation:appear .65s ease both}
+  .slide.active{display:flex;flex-direction:column;justify-content:center}
+  @keyframes appear{from{opacity:0;transform:translateY(18px) scale(.985)}to{opacity:1;transform:none}}
+  .eyebrow{font:12px Arial,sans-serif;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:18px}
+  h1{font-size:clamp(48px,9vw,88px);line-height:.98;margin:0 0 20px;font-weight:normal;letter-spacing:-2px}
+  h2{font-size:clamp(34px,6vw,54px);font-weight:normal;line-height:1.08;margin:0 0 24px}
+  p{font:clamp(17px,2.4vw,21px)/1.8 Arial,sans-serif;color:#edf5e9;max-width:720px;margin:0}
+  .subtitle{font:clamp(17px,2.5vw,22px)/1.6 Arial,sans-serif;color:#d5e9d7;max-width:600px}
+  .rule{width:72px;height:2px;background:var(--gold);margin:24px 0}
+  .decor{font-size:clamp(42px,7vw,68px);margin-bottom:16px;filter:drop-shadow(0 8px 18px #071c16)}
+  .columns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:26px}
+  .mini{padding:18px;border-radius:16px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12)}
+  .mini strong{display:block;color:#f6dda0;font: bold 15px Arial,sans-serif;margin-bottom:8px}
+  .mini span{font:15px/1.6 Arial,sans-serif;color:#e4efe2}
+  .closing{color:#f6dda0;font-style:italic}
+  footer{width:min(1050px,100%);display:flex;align-items:center;gap:14px}
+  .progress{height:3px;flex:1;background:rgba(255,255,255,.18);border-radius:8px;overflow:hidden}
+  .bar{height:100%;width:16.66%;background:var(--gold);transition:width .35s ease}
+  button{border:1px solid rgba(255,255,255,.32);background:rgba(255,255,255,.09);color:#fff9e9;
+    border-radius:30px;padding:12px 19px;font:14px Arial,sans-serif;cursor:pointer;transition:.2s}
+  button:hover{background:rgba(255,255,255,.2);transform:translateY(-2px)}
+  button:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+  .hint{font:11px Arial,sans-serif;color:#c5ddca;opacity:.8;margin-top:12px;text-align:center}
+  @media(max-width:600px){
+    .wrap{padding:17px 12px}.slide{min-height:500px;padding:28px 23px;border-radius:22px}
+    .columns{grid-template-columns:1fr;gap:10px}.mini{padding:13px}
+    header{font-size:10px;letter-spacing:1.4px}footer{gap:8px}button{padding:11px 14px}
+  }
+  @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<div class="glow" aria-hidden="true">
+  <div class="orb one"></div><div class="orb two"></div><div class="orb three"></div>
+</div>
+<div class="wrap">
+  <header>
+    <div class="brand"><span class="brand-mark"></span><span>Nature · Seasons</span></div>
+    <div class="counter" id="counter">01 / 06</div>
+  </header>
+
+  <main>
+    <section class="slide active">
+      <div class="eyebrow">A short presentation</div>
+      <div class="decor">🌿</div>
+      <h1>Spring</h1>
+      <div class="rule"></div>
+      <div class="subtitle">A beautiful season of color, change, and new beginnings.</div>
+    </section>
+
+    <section class="slide">
+      <div class="eyebrow">01 · The season</div>
+      <h2>What is spring?</h2>
+      <p>Spring comes after winter. During this season, the weather becomes warmer, flowers start to bloom, and trees become green again. The days get longer, and nature looks more beautiful.</p>
+      <div class="columns">
+        <div class="mini"><strong>Warmer days</strong><span>The temperature slowly rises.</span></div>
+        <div class="mini"><strong>More daylight</strong><span>Days become longer and brighter.</span></div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="eyebrow">02 · Nature</div>
+      <h2>Nature comes alive</h2>
+      <p>Flowers begin to bloom, trees grow new leaves, and the world becomes full of color. Animals become more active, and many birds return after migration.</p>
+      <div class="decor" style="margin-top:24px">🌸　🌱　🕊️</div>
+    </section>
+
+    <section class="slide">
+      <div class="eyebrow">03 · Outdoor life</div>
+      <h2>Time to enjoy the outdoors</h2>
+      <p>Spring is a great time to enjoy outdoor activities. People can go for walks, play sports, travel, and spend more time with their friends and family.</p>
+      <div class="columns">
+        <div class="mini"><strong>Explore</strong><span>Visit parks and enjoy fresh air.</span></div>
+        <div class="mini"><strong>Be active</strong><span>Walk, cycle, or play sports.</span></div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="eyebrow">04 · A deeper meaning</div>
+      <h2>More than a season</h2>
+      <p>Spring is also a symbol of happiness, hope, and new beginnings. It reminds us that every day is a chance to start something new.</p>
+      <div class="rule"></div>
+      <p class="closing">“Every new season brings a new opportunity.”</p>
+    </section>
+
+    <section class="slide">
+      <div class="eyebrow">Thank you</div>
+      <div class="decor">🌷</div>
+      <h2>Thank you for listening.</h2>
+      <p>I hope you enjoy the beauty of spring as much as I do.</p>
+      <div class="rule"></div>
+      <div class="subtitle">Any questions?</div>
+    </section>
+  </main>
+
+  <footer>
+    <button id="prev" type="button" aria-label="Previous slide">← Back</button>
+    <div class="progress"><div class="bar" id="bar"></div></div>
+    <button id="next" type="button" aria-label="Next slide">Next →</button>
+  </footer>
+  <div class="hint">Use the buttons or your keyboard arrows to move between slides</div>
+</div>
+<script>
+  const slides = [...document.querySelectorAll('.slide')];
+  const counter = document.getElementById('counter');
+  const bar = document.getElementById('bar');
+  let current = 0;
+  function showSlide(index){
+    current = Math.max(0, Math.min(slides.length - 1, index));
+    slides.forEach((slide, i) => slide.classList.toggle('active', i === current));
+    counter.textContent = String(current + 1).padStart(2,'0') + ' / ' + String(slides.length).padStart(2,'0');
+    bar.style.width = ((current + 1) / slides.length * 100) + '%';
+    document.getElementById('prev').disabled = current === 0;
+    document.getElementById('next').textContent = current === slides.length - 1 ? 'Restart ↻' : 'Next →';
+  }
+  document.getElementById('prev').addEventListener('click', () => showSlide(current - 1));
+  document.getElementById('next').addEventListener('click', () => showSlide(current === slides.length - 1 ? 0 : current + 1));
+  document.addEventListener('keydown', e => {
+    if(e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' '){e.preventDefault();showSlide(current + 1)}
+    if(e.key === 'ArrowLeft' || e.key === 'PageUp'){e.preventDefault();showSlide(current - 1)}
+  });
+  // Small, lightweight falling petals
+  const bg = document.querySelector('.glow');
+  for(let i=0;i<22;i++){
+    const petal=document.createElement('span');
+    petal.className='petal';
+    petal.style.left=(Math.random()*100)+'%';
+    petal.style.animationDuration=(10+Math.random()*13)+'s';
+    petal.style.animationDelay=(-Math.random()*22)+'s';
+    petal.style.transform='scale('+(0.55+Math.random()*0.8)+')';
+    bg.appendChild(petal);
+  }
+  showSlide(0);
+</script>
+</body>
+</html>
